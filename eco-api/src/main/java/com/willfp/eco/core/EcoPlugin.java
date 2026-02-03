@@ -23,7 +23,7 @@ import com.willfp.eco.core.scheduling.Scheduler;
 import com.willfp.eco.core.version.OutdatedEcoVersionError;
 import com.willfp.eco.core.version.Version;
 import com.willfp.eco.core.web.UpdateChecker;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;

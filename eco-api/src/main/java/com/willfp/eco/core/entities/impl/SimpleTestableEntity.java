@@ -1,7 +1,7 @@
 package com.willfp.eco.core.entities.impl;
 
 import com.willfp.eco.core.entities.TestableEntity;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -35,7 +35,7 @@ public class SimpleTestableEntity implements TestableEntity {
 
     @Override
     public Entity spawn(@NotNull final Location location) {
-        Validate.notNull(location.getWorld());
+        Validate.notNull(location.getWorld(), "World must not be null!");
 
         assert type.getEntityClass() != null;
 

@@ -1,6 +1,6 @@
 package com.willfp.eco.core.price;
 
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

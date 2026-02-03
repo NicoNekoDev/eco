@@ -8,7 +8,7 @@ import com.sk89q.worldguard.protection.flags.Flags
 import com.sk89q.worldguard.protection.regions.RegionContainer
 import com.sk89q.worldguard.protection.regions.RegionQuery
 import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
-import org.apache.commons.lang.Validate
+import org.apache.commons.lang3.Validate
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.Animals

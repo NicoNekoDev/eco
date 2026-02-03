@@ -3,7 +3,7 @@ package com.willfp.eco.core.items.builder;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.util.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;

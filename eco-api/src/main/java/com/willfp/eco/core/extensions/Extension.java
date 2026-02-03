@@ -3,7 +3,7 @@ package com.willfp.eco.core.extensions;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginLike;
 import com.willfp.eco.core.config.updating.ConfigHandler;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

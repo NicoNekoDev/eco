@@ -35,6 +35,6 @@ tasks {
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_6/TPS*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_6/CommonsInitializer*.class")
 
-        duplicatesStrategy = DuplicatesStrategy.FAIL
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 }
