@@ -93,12 +93,12 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     private final LangYml langYml;
 
     /**
-     * The factory to produce {@link org.bukkit.NamespacedKey}s.
+     * The factory to produce {@link NamespacedKey}s.
      */
     private final NamespacedKeyFactory namespacedKeyFactory;
 
     /**
-     * The factory to produce {@link org.bukkit.metadata.FixedMetadataValue}s.
+     * The factory to produce {@link FixedMetadataValue}s.
      */
     private final MetadataValueFactory metadataValueFactory;
 
