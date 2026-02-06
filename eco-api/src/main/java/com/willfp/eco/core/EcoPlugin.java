@@ -1,5 +1,6 @@
 package com.willfp.eco.core;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.willfp.eco.core.command.impl.PluginCommand;
 import com.willfp.eco.core.config.base.ConfigYml;
@@ -23,7 +24,6 @@ import com.willfp.eco.core.scheduling.Scheduler;
 import com.willfp.eco.core.version.OutdatedEcoVersionError;
 import com.willfp.eco.core.version.Version;
 import com.willfp.eco.core.web.UpdateChecker;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -892,7 +892,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     @Nullable
     @Deprecated(since = "6.72.0")
     protected DisplayModule createDisplayModule() {
-        Validate.isTrue(this.getDisplayModule() == null, "Display module exists!");
+        Preconditions.checkArgument(this.getDisplayModule() == null, "Display module exists!");
 
         return null;
     }
@@ -936,7 +936,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @return The proxy.
      */
     public final <T> T getProxy(@NotNull final Class<T> proxyClass) {
-        Validate.notNull(proxyFactory, "Plugin does not support proxies!");
+        Preconditions.checkNotNull(proxyFactory, "Plugin does not support proxies!");
 
         return proxyFactory.getProxy(proxyClass);
     }

@@ -3,6 +3,7 @@ package com.willfp.eco.util;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonSyntaxException;
@@ -17,7 +18,6 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -696,8 +696,8 @@ public final class StringUtils {
                                            @NotNull final String completeFormat,
                                            @NotNull final String inProgressFormat,
                                            @NotNull final String incompleteFormat) {
-        Validate.isTrue(progress >= 0 && progress <= 1, "Progress must be between 0 and 1!");
-        Validate.isTrue(bars > 1, "Must have at least 2 bars!");
+        Preconditions.checkArgument(progress >= 0 && progress <= 1, "Progress must be between 0 and 1!");
+        Preconditions.checkArgument(bars > 1, "Must have at least 2 bars!");
 
         String completeColor = format(completeFormat);
         String inProgressColor = format(inProgressFormat);

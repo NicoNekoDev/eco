@@ -139,7 +139,6 @@ allprojects {
         // Other
         implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
         implementation("org.apache.maven:maven-artifact:3.9.12")
-        implementation("org.apache.commons:commons-lang3:3.20.0")
     }
 
     tasks.withType<JavaCompile> {
