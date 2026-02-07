@@ -22,7 +22,7 @@ class AntigriefSuperiorSkyblock2 : AntigriefIntegration {
         val superiorPlayer = SuperiorSkyblockAPI.getPlayer(player)
 
         if (island == null) {
-            return superiorPlayer.hasBypassModeEnabled() && SuperiorSkyblockAPI.getSuperiorSkyblock().grid
+            return superiorPlayer.hasBypassModeEnabled() || !SuperiorSkyblockAPI.getSuperiorSkyblock().grid
                 .isIslandsWorld(superiorPlayer.world)
         }
 
@@ -49,7 +49,7 @@ class AntigriefSuperiorSkyblock2 : AntigriefIntegration {
         val superiorPlayer: SuperiorPlayer = SuperiorSkyblockAPI.getPlayer(player)
 
         if (island == null) {
-            return superiorPlayer.hasBypassModeEnabled() && SuperiorSkyblockAPI.getSuperiorSkyblock().grid
+            return superiorPlayer.hasBypassModeEnabled() || !SuperiorSkyblockAPI.getSuperiorSkyblock().grid
                 .isIslandsWorld(superiorPlayer.world)
         }
 

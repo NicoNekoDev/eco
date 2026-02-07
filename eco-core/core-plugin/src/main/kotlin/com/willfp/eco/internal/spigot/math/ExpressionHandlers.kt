@@ -110,7 +110,8 @@ class LazyPlaceholderTranslationExpressionHandler(
 
         val compiled = cache.getOrPut(expression) {
             val env = EvaluationEnvironment()
-            env.setVariableNames(*placeholders.toTypedArray())
+            // crunch variable names must begin with an alphabetic character
+            env.setVariableNames(*placeholders.map { it.removeSurrounding("%") }.toTypedArray())
             env.addFunctions(rand, min, max)
             runCatching { Crunch.compileExpression(expression, env) }.getOrNull()
         }
