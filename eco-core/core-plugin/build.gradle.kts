@@ -5,7 +5,7 @@ dependencies {
     compileOnly(project(":eco-core:core-backend"))
 
     // Libraries
-    implementation("com.github.boxbeam:Crunch:2.0.3")
+    implementation("com.github.NicoNekoDev:Crunch:2.0.3")
     implementation("com.mysql:mysql-connector-j:9.6.0")
     implementation("org.jetbrains.exposed:exposed-core:1.0.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:1.0.0")
