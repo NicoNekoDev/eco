@@ -30,6 +30,8 @@ import com.willfp.eco.internal.events.EcoEventManager
 import com.willfp.eco.internal.extensions.EcoExtensionLoader
 import com.willfp.eco.internal.factory.EcoMetadataValueFactory
 import com.willfp.eco.internal.factory.EcoNamespacedKeyFactory
+import com.willfp.eco.internal.factory.EcoRunnableFactoryFolia
+import com.willfp.eco.internal.factory.EcoRunnableFactorySpigot
 import com.willfp.eco.internal.fast.SafeInternalNamespacedKeyFactory
 import com.willfp.eco.internal.gui.MergedStateMenu
 import com.willfp.eco.internal.gui.menu.EcoMenuBuilder
@@ -110,6 +112,9 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun createMetadataValueFactory(plugin: EcoPlugin) =
         EcoMetadataValueFactory(plugin)
+
+    override fun createRunnableFactory(plugin: EcoPlugin) =
+        if (Prerequisite.HAS_FOLIA.isMet) EcoRunnableFactoryFolia(plugin) else EcoRunnableFactorySpigot(plugin)
 
     override fun createExtensionLoader(plugin: EcoPlugin) =
         EcoExtensionLoader(plugin)

@@ -18,6 +18,7 @@ import com.willfp.eco.core.events.EventManager;
 import com.willfp.eco.core.extensions.ExtensionLoader;
 import com.willfp.eco.core.factory.MetadataValueFactory;
 import com.willfp.eco.core.factory.NamespacedKeyFactory;
+import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.gui.menu.MenuBuilder;
@@ -99,6 +100,15 @@ public interface Eco {
      */
     @NotNull
     MetadataValueFactory createMetadataValueFactory(@NotNull EcoPlugin plugin);
+
+    /**
+     * Create a Runnable factory.
+     *
+     * @param plugin The plugin.
+     * @return The factory.
+     */
+    @NotNull
+    RunnableFactory createRunnableFactory(@NotNull EcoPlugin plugin);
 
     /**
      * Create an ExtensionLoader.

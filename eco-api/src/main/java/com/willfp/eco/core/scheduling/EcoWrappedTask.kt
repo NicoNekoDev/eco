@@ -12,5 +12,7 @@ interface EcoWrappedTask {
      *
      * @return true if the task is async
      */
-    fun isAsync(): Boolean
+    fun isAsync(): Boolean {
+        return false
+    }
 }
