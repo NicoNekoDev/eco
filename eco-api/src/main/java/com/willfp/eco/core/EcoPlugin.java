@@ -13,7 +13,6 @@ import com.willfp.eco.core.extensions.Extension;
 import com.willfp.eco.core.extensions.ExtensionLoader;
 import com.willfp.eco.core.factory.MetadataValueFactory;
 import com.willfp.eco.core.factory.NamespacedKeyFactory;
-import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.map.ListMap;
 import com.willfp.eco.core.packet.PacketListener;
@@ -101,11 +100,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * The factory to produce {@link FixedMetadataValue}s.
      */
     private final MetadataValueFactory metadataValueFactory;
-
-    /**
-     * The factory to produce {@link com.willfp.eco.core.scheduling.RunnableTask}s.
-     */
-    private final RunnableFactory runnableFactory;
 
     /**
      * The loader for all plugin extensions.
@@ -340,7 +334,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         this.eventManager = Eco.get().createEventManager(this);
         this.namespacedKeyFactory = Eco.get().createNamespacedKeyFactory(this);
         this.metadataValueFactory = Eco.get().createMetadataValueFactory(this);
-        this.runnableFactory = Eco.get().createRunnableFactory(this);
         this.extensionLoader = Eco.get().createExtensionLoader(this);
         this.configHandler = Eco.get().createConfigHandler(this);
 
@@ -438,7 +431,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         this.loadPluginCommands().forEach(PluginCommand::register);
 
         // Run preliminary reload to resolve load order issues
-        this.getScheduler().runLater(() -> {
+        this.getScheduler().runTaskLater(() -> {
             Logger before = this.getLogger();
             // Temporary silence logger.
             //this.logger = Eco.get().getNOOPLogger();
@@ -448,7 +441,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             //this.logger = before;
         }, 1);
 
-        this.getScheduler().runLater(this::afterLoad, 2);
+        this.getScheduler().runTaskLater(this::afterLoad, 2);
 
         if (this.isSupportingExtensions()) {
             this.getExtensionLoader().loadExtensions();
@@ -1124,15 +1117,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      */
     public MetadataValueFactory getMetadataValueFactory() {
         return this.metadataValueFactory;
-    }
-
-    /**
-     * Get the runnable factory.
-     *
-     * @return The runnable factory.
-     */
-    public RunnableFactory getRunnableFactory() {
-        return this.runnableFactory;
     }
 
     /**

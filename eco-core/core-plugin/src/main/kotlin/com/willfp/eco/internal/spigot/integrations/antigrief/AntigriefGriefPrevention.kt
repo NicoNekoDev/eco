@@ -9,6 +9,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
 class AntigriefGriefPrevention : AntigriefIntegration {
+    @Suppress("DEPRECATION")
     override fun canBreakBlock(
         player: Player,
         block: Block
@@ -27,6 +28,7 @@ class AntigriefGriefPrevention : AntigriefIntegration {
         return claim?.areExplosivesAllowed ?: true
     }
 
+    @Suppress("DEPRECATION")
     override fun canPlaceBlock(
         player: Player,
         block: Block

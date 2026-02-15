@@ -4,6 +4,7 @@ import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.PluginProps
+import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.PluginCommandBase
 import com.willfp.eco.core.config.ConfigType
@@ -29,7 +30,6 @@ import com.willfp.eco.internal.events.EcoEventManager
 import com.willfp.eco.internal.extensions.EcoExtensionLoader
 import com.willfp.eco.internal.factory.EcoMetadataValueFactory
 import com.willfp.eco.internal.factory.EcoNamespacedKeyFactory
-import com.willfp.eco.internal.factory.EcoRunnableFactory
 import com.willfp.eco.internal.fast.SafeInternalNamespacedKeyFactory
 import com.willfp.eco.internal.gui.MergedStateMenu
 import com.willfp.eco.internal.gui.menu.EcoMenuBuilder
@@ -40,7 +40,8 @@ import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.logging.NOOPLogger
 import com.willfp.eco.internal.placeholder.PlaceholderParser
 import com.willfp.eco.internal.proxy.EcoProxyFactory
-import com.willfp.eco.internal.scheduling.EcoScheduler
+import com.willfp.eco.internal.schedule.EcoSchedulerFolia
+import com.willfp.eco.internal.scheduling.EcoSchedulerSpigot
 import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
@@ -48,7 +49,19 @@ import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.math.DelegatedExpressionHandler
 import com.willfp.eco.internal.spigot.math.ImmediatePlaceholderTranslationExpressionHandler
 import com.willfp.eco.internal.spigot.math.LazyPlaceholderTranslationExpressionHandler
-import com.willfp.eco.internal.spigot.proxies.*
+import com.willfp.eco.internal.spigot.proxies.BukkitCommandsProxy
+import com.willfp.eco.internal.spigot.proxies.CommonsInitializerProxy
+import com.willfp.eco.internal.spigot.proxies.DisplayNameProxy
+import com.willfp.eco.internal.spigot.proxies.DummyEntityFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.EntityControllerFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.ExtendedPersistentDataContainerFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.FastItemStackFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.MiniMessageTranslatorProxy
+import com.willfp.eco.internal.spigot.proxies.PacketHandlerProxy
+import com.willfp.eco.internal.spigot.proxies.PlayerHandlerProxy
+import com.willfp.eco.internal.spigot.proxies.SNBTConverterProxy
+import com.willfp.eco.internal.spigot.proxies.SkullProxy
+import com.willfp.eco.internal.spigot.proxies.TPSProxy
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
@@ -61,7 +74,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
 import java.net.URLClassLoader
-import java.util.*
+import java.util.UUID
 
 private val loadedEcoPlugins = mutableMapOf<String, EcoPlugin>()
 
@@ -87,7 +100,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     )
 
     override fun createScheduler(plugin: EcoPlugin) =
-        EcoScheduler(plugin)
+        if (Prerequisite.HAS_FOLIA.isMet) EcoSchedulerFolia(plugin) else EcoSchedulerSpigot(plugin)
 
     override fun createEventManager(plugin: EcoPlugin) =
         EcoEventManager(plugin)
@@ -97,9 +110,6 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun createMetadataValueFactory(plugin: EcoPlugin) =
         EcoMetadataValueFactory(plugin)
-
-    override fun createRunnableFactory(plugin: EcoPlugin) =
-        EcoRunnableFactory(plugin)
 
     override fun createExtensionLoader(plugin: EcoPlugin) =
         EcoExtensionLoader(plugin)
