@@ -57,7 +57,7 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
         repeat: Long
     ): EcoWrappedTaskSpigot {
         return EcoWrappedTaskSpigot(
-            Bukkit.getScheduler().runTaskTimer(plugin, runnable, delay, repeat)
+            Bukkit.getScheduler().runTaskTimer(plugin, runnable, delay, repeat), true
         )
     }
 
@@ -94,7 +94,7 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
         repeat: Long
     ): EcoWrappedTaskSpigot {
         return EcoWrappedTaskSpigot(
-            Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, delay, repeat)
+            Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, delay, repeat), true
         )
     }
 

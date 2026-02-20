@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.schedule
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.scheduling.EcoWrappedTask
 import com.willfp.eco.core.scheduling.RunnableTask
 import org.bukkit.Bukkit
 import java.util.concurrent.TimeUnit
@@ -51,7 +52,8 @@ abstract class EcoRunnableTaskFolia(protected val plugin: EcoPlugin) : RunnableT
         return task!!
     }
 
-    override fun cancel() {
-        task?.cancel()
+    @Synchronized
+    override fun cancelTask(): EcoWrappedTask.CancelledState? {
+        return task?.cancelTask()
     }
 }

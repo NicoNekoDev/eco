@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.scheduling
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.scheduling.EcoWrappedTask
 import com.willfp.eco.core.scheduling.RunnableTask
 import kotlinx.coroutines.Runnable
 import org.bukkit.Bukkit
@@ -37,16 +38,20 @@ abstract class EcoRunnableTaskSpigot(protected val plugin: EcoPlugin) : Runnable
     @Synchronized
     override fun runTaskTimer(delay: Long, period: Long): EcoWrappedTaskSpigot {
         val runnable: Runnable = { this.run() }
-        return EcoWrappedTaskSpigot(Bukkit.getScheduler().runTaskTimer(plugin, runnable, delay, period))
+        return EcoWrappedTaskSpigot(Bukkit.getScheduler().runTaskTimer(plugin, runnable, delay, period), true)
     }
 
     @Synchronized
     override fun runTaskTimerAsynchronously(delay: Long, period: Long): EcoWrappedTaskSpigot {
         val runnable: Runnable = { this.run() }
-        return EcoWrappedTaskSpigot(Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, delay, period))
+        return EcoWrappedTaskSpigot(
+            Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, delay, period),
+            true
+        )
     }
 
-    override fun cancel() {
-        task?.cancel()
+    @Synchronized
+    override fun cancelTask(): EcoWrappedTask.CancelledState? {
+        return task?.cancelTask()
     }
 }

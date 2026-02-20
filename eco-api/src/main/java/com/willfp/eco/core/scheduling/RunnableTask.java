@@ -56,6 +56,18 @@ public interface RunnableTask extends Runnable {
 
     /**
      * Cancel the task.
+     *
+     * @deprecated Use cancelTask() instead.
      */
-    void cancel();
+    @Deprecated(since = "6.77.3", forRemoval = true)
+    default void cancel() {
+        cancelTask();
+    }
+
+    /**
+     * Cancel the task.
+     *
+     * @return The cancelled state
+     */
+    EcoWrappedTask.CancelledState cancelTask();
 }
