@@ -27,7 +27,7 @@ class CustomItemsNexo(
     }
 
     @EventHandler
-    @Suppress("UNUSED_PARAMETER")
+    @Suppress("UNUSED_PARAMETER", "OVERRIDE_DEPRECATION")
     fun onItemRegister(event: NexoItemsLoadedEvent) {
         Items.registerItemProvider(NexoProvider())
 

@@ -6,6 +6,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /**
  * Thread scheduler to handle tasks and asynchronous code.
  */
@@ -56,6 +58,19 @@ public interface Scheduler {
      */
     EcoWrappedTask runTaskLater(@NotNull Runnable runnable,
                                 @NotNull Entity entity,
+                                long ticksLater);
+
+    /**
+     * Run the task after a specified tick delay for all given entities, in sync with the server.
+     * Warn: for Folia it suspends all threads until the task is finished
+     *
+     * @param runnable   The lambda to run.
+     * @param entities   The entities to run for.
+     * @param ticksLater The amount of ticks to wait before execution.
+     * @return The created {@link EcoWrappedTask}.
+     */
+    EcoWrappedTask runTaskLater(@NotNull Runnable runnable,
+                                @NotNull List<Entity> entities,
                                 long ticksLater);
 
     /**
@@ -118,6 +133,23 @@ public interface Scheduler {
                                         long ticksLater,
                                         @NotNull Runnable runnable) {
         return runTaskLater(runnable, entity, ticksLater);
+    }
+
+    /**
+     * Run the task after a specified tick delay for all given entities, in sync with the server.
+     * Warn: for Folia it suspends all threads until the task is finished
+     * <p>
+     * Reordered for better kotlin interop.
+     *
+     * @param runnable   The lambda to run.
+     * @param entities   The entities to run for.
+     * @param ticksLater The amount of ticks to wait before execution.
+     * @return The created {@link EcoWrappedTask}.
+     */
+    default EcoWrappedTask runTaskLater(@NotNull List<Entity> entities,
+                                        long ticksLater,
+                                        @NotNull Runnable runnable) {
+        return runTaskLater(runnable, entities, ticksLater);
     }
 
     /**
@@ -339,6 +371,16 @@ public interface Scheduler {
      * @return The created {@link EcoWrappedTask}.
      */
     EcoWrappedTask runTask(@NotNull Entity entity, @NotNull Runnable runnable);
+
+    /**
+     * Run the task for all entities, in sync with the server.
+     * Warn: for Folia it suspends all threads until the task is finished
+     *
+     * @param runnable The lambda to run.
+     * @param entities   The entities to run for.
+     * @return The created {@link EcoWrappedTask}.
+     */
+    EcoWrappedTask runTask(@NotNull List<Entity> entities, @NotNull Runnable runnable);
 
     /**
      * Run the task asynchronously.

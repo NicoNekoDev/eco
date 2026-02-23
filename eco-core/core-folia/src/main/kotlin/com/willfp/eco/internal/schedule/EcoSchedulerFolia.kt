@@ -7,7 +7,9 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.scheduler.BukkitTask
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.locks.ReentrantLock
 
 class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
     @Deprecated("Deprecated")
@@ -38,6 +40,30 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
         return EcoWrappedTaskFolia(
             entity.scheduler.runDelayed(plugin, { runnable.run() }, null, ticksLater)!!
         )
+    }
+
+    override fun runTaskLater(
+        runnable: Runnable,
+        entities: List<Entity>,
+        ticksLater: Long
+    ): EcoWrappedTask {
+        return this.runTaskLater(ticksLater) {
+            val waiting = mutableListOf<CompletableFuture<Boolean>>()
+            val lock = ReentrantLock()
+            lock.lock()
+            for (entity in entities) {
+                val future = CompletableFuture<Boolean>()
+                this.runTask(entity) {
+                    future.complete(true)
+                    lock.lock()
+                    lock.unlock()
+                }
+                waiting.add(future)
+            }
+            waiting.forEach { it.get() }
+            runnable.run()
+            lock.unlock()
+        }
     }
 
     @Deprecated("Deprecated")
@@ -130,6 +156,29 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
         return EcoWrappedTaskFolia(
             entity.scheduler.run(plugin, { runnable.run() }, null)!!
         )
+    }
+
+    override fun runTask(
+        entities: List<Entity>,
+        runnable: Runnable
+    ): EcoWrappedTask {
+        return this.runTask {
+            val waiting = mutableListOf<CompletableFuture<Boolean>>()
+            val lock = ReentrantLock()
+            lock.lock()
+            for (entity in entities) {
+                val future = CompletableFuture<Boolean>()
+                this.runTask(entity) {
+                    future.complete(true)
+                    lock.lock()
+                    lock.unlock()
+                }
+                waiting.add(future)
+            }
+            waiting.forEach { it.get() }
+            runnable.run()
+            lock.unlock()
+        }
     }
 
     @Deprecated("Deprecated")

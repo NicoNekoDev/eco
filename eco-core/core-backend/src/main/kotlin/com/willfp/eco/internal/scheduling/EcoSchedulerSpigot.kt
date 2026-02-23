@@ -41,6 +41,14 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
         return runTaskLater(runnable, ticksLater)
     }
 
+    override fun runTaskLater(
+        runnable: Runnable,
+        entities: List<Entity>,
+        ticksLater: Long
+    ): EcoWrappedTaskSpigot {
+        return runTaskLater(runnable, ticksLater)
+    }
+
 
     @Deprecated("Deprecated")
     override fun runTimer(
@@ -120,6 +128,13 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
 
     override fun runTask(
         entity: Entity,
+        runnable: Runnable
+    ): EcoWrappedTaskSpigot {
+        return runTask(runnable)
+    }
+
+    override fun runTask(
+        entities: List<Entity>,
         runnable: Runnable
     ): EcoWrappedTaskSpigot {
         return runTask(runnable)
