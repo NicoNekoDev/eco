@@ -6,6 +6,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.scheduler.BukkitTask
+import java.util.concurrent.FutureTask
 
 class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
     @Deprecated("Deprecated")
@@ -17,7 +18,7 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
     }
 
     override fun runTaskLater(
-        runnable: Runnable,
+        runnable: FutureTask<*>,
         ticksLater: Long
     ): EcoWrappedTaskSpigot {
         return EcoWrappedTaskSpigot(
@@ -26,7 +27,7 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
     }
 
     override fun runTaskLater(
-        runnable: Runnable,
+        runnable: FutureTask<*>,
         location: Location,
         ticksLater: Long
     ): EcoWrappedTaskSpigot {
@@ -34,7 +35,7 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
     }
 
     override fun runTaskLater(
-        runnable: Runnable,
+        runnable: FutureTask<*>,
         entity: Entity,
         ticksLater: Long
     ): EcoWrappedTaskSpigot {
@@ -42,7 +43,7 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
     }
 
     override fun runTaskLater(
-        runnable: Runnable,
+        runnable: FutureTask<*>,
         entities: List<Entity>,
         ticksLater: Long
     ): EcoWrappedTaskSpigot {
@@ -112,7 +113,7 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
     }
 
     override fun runTask(
-        runnable: Runnable
+        runnable: FutureTask<*>
     ): EcoWrappedTaskSpigot {
         return EcoWrappedTaskSpigot(
             Bukkit.getScheduler().runTask(plugin, runnable)
@@ -121,21 +122,21 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
 
     override fun runTask(
         location: Location,
-        runnable: Runnable
+        runnable: FutureTask<*>
     ): EcoWrappedTaskSpigot {
         return runTask(runnable)
     }
 
     override fun runTask(
         entity: Entity,
-        runnable: Runnable
+        runnable: FutureTask<*>
     ): EcoWrappedTaskSpigot {
         return runTask(runnable)
     }
 
     override fun runTask(
         entities: List<Entity>,
-        runnable: Runnable
+        runnable: FutureTask<*>
     ): EcoWrappedTaskSpigot {
         return runTask(runnable)
     }
@@ -145,7 +146,7 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
         return Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable)
     }
 
-    override fun runTaskAsync(runnable: Runnable): EcoWrappedTaskSpigot {
+    override fun runTaskAsync(runnable: FutureTask<*>): EcoWrappedTaskSpigot {
         return EcoWrappedTaskSpigot(
             Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable)
         )

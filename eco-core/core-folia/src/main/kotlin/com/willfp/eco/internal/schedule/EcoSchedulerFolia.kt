@@ -8,13 +8,14 @@ import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.scheduler.BukkitTask
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.FutureTask
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 
 class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
     @Deprecated("Deprecated")
     override fun runTaskLater(
-        runnable: Runnable,
+        runnable: FutureTask<*>,
         ticksLater: Long
     ): EcoWrappedTask {
         return EcoWrappedTaskFolia(
@@ -23,7 +24,7 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
     }
 
     override fun runTaskLater(
-        runnable: Runnable,
+        runnable: FutureTask<*>,
         location: Location,
         ticksLater: Long
     ): EcoWrappedTask {
@@ -33,7 +34,7 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
     }
 
     override fun runTaskLater(
-        runnable: Runnable,
+        runnable: FutureTask<*>,
         entity: Entity,
         ticksLater: Long
     ): EcoWrappedTask {
@@ -43,27 +44,27 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
     }
 
     override fun runTaskLater(
-        runnable: Runnable,
+        runnable: FutureTask<*>,
         entities: List<Entity>,
         ticksLater: Long
     ): EcoWrappedTask {
-        return this.runTaskLater(ticksLater) {
+        return this.runTaskLater(ticksLater, FutureTask {
             val waiting = mutableListOf<CompletableFuture<Boolean>>()
             val lock = ReentrantLock()
             lock.lock()
             for (entity in entities) {
                 val future = CompletableFuture<Boolean>()
-                this.runTask(entity) {
+                this.runTask(entity, FutureTask {
                     future.complete(true)
                     lock.lock()
                     lock.unlock()
-                }
+                })
                 waiting.add(future)
             }
             waiting.forEach { it.get() }
             runnable.run()
             lock.unlock()
-        }
+        })
     }
 
     @Deprecated("Deprecated")
@@ -133,7 +134,7 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
     }
 
     override fun runTask(
-        runnable: Runnable
+        runnable: FutureTask<*>
     ): EcoWrappedTask {
         return EcoWrappedTaskFolia(
             Bukkit.getGlobalRegionScheduler().run(plugin) { runnable.run() }
@@ -142,7 +143,7 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
 
     override fun runTask(
         location: Location,
-        runnable: Runnable
+        runnable: FutureTask<*>
     ): EcoWrappedTask {
         return EcoWrappedTaskFolia(
             Bukkit.getRegionScheduler().run(plugin, location) { runnable.run() }
@@ -151,7 +152,7 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
 
     override fun runTask(
         entity: Entity,
-        runnable: Runnable
+        runnable: FutureTask<*>
     ): EcoWrappedTask {
         return EcoWrappedTaskFolia(
             entity.scheduler.run(plugin, { runnable.run() }, null)!!
@@ -160,25 +161,25 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
 
     override fun runTask(
         entities: List<Entity>,
-        runnable: Runnable
+        runnable: FutureTask<*>
     ): EcoWrappedTask {
-        return this.runTask {
+        return this.runTask(FutureTask {
             val waiting = mutableListOf<CompletableFuture<Boolean>>()
             val lock = ReentrantLock()
             lock.lock()
             for (entity in entities) {
                 val future = CompletableFuture<Boolean>()
-                this.runTask(entity) {
+                this.runTask(entity, FutureTask {
                     future.complete(true)
                     lock.lock()
                     lock.unlock()
-                }
+                })
                 waiting.add(future)
             }
             waiting.forEach { it.get() }
             runnable.run()
             lock.unlock()
-        }
+        })
     }
 
     @Deprecated("Deprecated")
@@ -187,7 +188,7 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
     }
 
     @Deprecated("Deprecated")
-    override fun runTaskAsync(runnable: Runnable): EcoWrappedTask {
+    override fun runTaskAsync(runnable: FutureTask<*>): EcoWrappedTask {
         return EcoWrappedTaskFolia(
             Bukkit.getAsyncScheduler().runNow(plugin) { runnable.run() }
         )

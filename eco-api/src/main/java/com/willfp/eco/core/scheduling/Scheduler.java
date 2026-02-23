@@ -7,6 +7,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.concurrent.FutureTask;
 
 /**
  * Thread scheduler to handle tasks and asynchronous code.
@@ -23,7 +24,7 @@ public interface Scheduler {
     @Deprecated(since = "6.77.3")
     default BukkitTask runLater(@NotNull Runnable runnable,
                                 long ticksLater) {
-        return (BukkitTask) runTaskLater(runnable, ticksLater);
+        return (BukkitTask) runTaskLater((FutureTask<?>) runnable, ticksLater);
     }
 
     /**
@@ -33,7 +34,7 @@ public interface Scheduler {
      * @param ticksLater The amount of ticks to wait before execution.
      * @return The created {@link EcoWrappedTask}.
      */
-    EcoWrappedTask runTaskLater(@NotNull Runnable runnable,
+    EcoWrappedTask runTaskLater(@NotNull FutureTask<?> runnable,
                                 long ticksLater);
 
     /**
@@ -44,7 +45,7 @@ public interface Scheduler {
      * @param ticksLater The amount of ticks to wait before execution.
      * @return The created {@link EcoWrappedTask}.
      */
-    EcoWrappedTask runTaskLater(@NotNull Runnable runnable,
+    EcoWrappedTask runTaskLater(@NotNull FutureTask<?> runnable,
                                 @NotNull Location location,
                                 long ticksLater);
 
@@ -56,7 +57,7 @@ public interface Scheduler {
      * @param ticksLater The amount of ticks to wait before execution.
      * @return The created {@link EcoWrappedTask}.
      */
-    EcoWrappedTask runTaskLater(@NotNull Runnable runnable,
+    EcoWrappedTask runTaskLater(@NotNull FutureTask<?> runnable,
                                 @NotNull Entity entity,
                                 long ticksLater);
 
@@ -69,7 +70,7 @@ public interface Scheduler {
      * @param ticksLater The amount of ticks to wait before execution.
      * @return The created {@link EcoWrappedTask}.
      */
-    EcoWrappedTask runTaskLater(@NotNull Runnable runnable,
+    EcoWrappedTask runTaskLater(@NotNull FutureTask<?> runnable,
                                 @NotNull List<Entity> entities,
                                 long ticksLater);
 
@@ -99,7 +100,7 @@ public interface Scheduler {
      * @return The created {@link EcoWrappedTask}.
      */
     default EcoWrappedTask runTaskLater(long ticksLater,
-                                        @NotNull Runnable runnable) {
+                                        @NotNull FutureTask<?> runnable) {
         return runTaskLater(runnable, ticksLater);
     }
 
@@ -115,7 +116,7 @@ public interface Scheduler {
      */
     default EcoWrappedTask runTaskLater(@NotNull Location location,
                                         long ticksLater,
-                                        @NotNull Runnable runnable) {
+                                        @NotNull FutureTask<?> runnable) {
         return runTaskLater(runnable, location, ticksLater);
     }
 
@@ -131,7 +132,7 @@ public interface Scheduler {
      */
     default EcoWrappedTask runTaskLater(@NotNull Entity entity,
                                         long ticksLater,
-                                        @NotNull Runnable runnable) {
+                                        @NotNull FutureTask<?> runnable) {
         return runTaskLater(runnable, entity, ticksLater);
     }
 
@@ -148,7 +149,7 @@ public interface Scheduler {
      */
     default EcoWrappedTask runTaskLater(@NotNull List<Entity> entities,
                                         long ticksLater,
-                                        @NotNull Runnable runnable) {
+                                        @NotNull FutureTask<?> runnable) {
         return runTaskLater(runnable, entities, ticksLater);
     }
 
@@ -352,7 +353,7 @@ public interface Scheduler {
      * @param runnable The lambda to run.
      * @return The created {@link EcoWrappedTask}.
      */
-    EcoWrappedTask runTask(@NotNull Runnable runnable);
+    EcoWrappedTask runTask(@NotNull FutureTask<?> runnable);
 
     /**
      * Run the task at a given location.
@@ -361,7 +362,7 @@ public interface Scheduler {
      * @param location The location to run at.
      * @return The created {@link EcoWrappedTask}.
      */
-    EcoWrappedTask runTask(@NotNull Location location, @NotNull Runnable runnable);
+    EcoWrappedTask runTask(@NotNull Location location, @NotNull FutureTask<?> runnable);
 
     /**
      * Run the task for a given entity.
@@ -370,7 +371,7 @@ public interface Scheduler {
      * @param entity   The entity to run for.
      * @return The created {@link EcoWrappedTask}.
      */
-    EcoWrappedTask runTask(@NotNull Entity entity, @NotNull Runnable runnable);
+    EcoWrappedTask runTask(@NotNull Entity entity, @NotNull FutureTask<?> runnable);
 
     /**
      * Run the task for all entities, in sync with the server.
@@ -380,7 +381,7 @@ public interface Scheduler {
      * @param entities   The entities to run for.
      * @return The created {@link EcoWrappedTask}.
      */
-    EcoWrappedTask runTask(@NotNull List<Entity> entities, @NotNull Runnable runnable);
+    EcoWrappedTask runTask(@NotNull List<Entity> entities, @NotNull FutureTask<?> runnable);
 
     /**
      * Run the task asynchronously.
@@ -398,7 +399,7 @@ public interface Scheduler {
      * @param runnable The lambda to run.
      * @return The created {@link EcoWrappedTask}.
      */
-    EcoWrappedTask runTaskAsync(@NotNull Runnable runnable);
+    EcoWrappedTask runTaskAsync(@NotNull FutureTask<?> runnable);
 
     /**
      * Cancel all running tasks from the linked {@link EcoPlugin}.
