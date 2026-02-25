@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Utility class to manage and register crafting recipes.
@@ -106,8 +105,6 @@ public final class Recipes {
         return createAndRegisterRecipe(plugin, key, output, recipeStrings, null);
     }
 
-    private static final ReentrantLock locker = new ReentrantLock();
-
     /**
      * Create and register recipe.
      *
@@ -125,7 +122,6 @@ public final class Recipes {
                                                          @NotNull final List<String> recipeStrings,
                                                          @Nullable final String permission) {
         try {
-            locker.lock();
             FutureTask<CraftingRecipe> task = new FutureTask<>(() -> {
                 ShapedCraftingRecipe.Builder builder = ShapedCraftingRecipe.builder(plugin, key)
                         .setOutput(output)
@@ -147,14 +143,12 @@ public final class Recipes {
                 return recipe;
             });
             if (Prerequisite.HAS_FOLIA.isMet()) {
-                plugin.getScheduler().runTask(Bukkit.getOnlinePlayers().stream().map(Entity.class::cast).toList(), task);
+                plugin.getScheduler().runTaskBlocking(Bukkit.getOnlinePlayers().stream().map(Entity.class::cast).toList(), task);
             } else
                 task.run();
             return task.get();
         } catch (Exception e) {
             throw new RuntimeException(e); // very unlikely to happen
-        } finally {
-            locker.unlock();
         }
     }
 

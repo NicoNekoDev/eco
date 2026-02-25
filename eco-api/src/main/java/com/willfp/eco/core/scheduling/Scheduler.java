@@ -102,29 +102,31 @@ public interface Scheduler {
     }
 
     /**
-     * Run the task after a specified tick delay for all given entities, in sync with the server.
-     * Warn: for Folia it suspends all threads until the task is finished
+     * Run the task after a specified tick delay for all given entities, in sync with the global thread.
+     * <br>For Spigot/Paper it runs <code>runTaskLater(task, ticksLater)</code>.
+     * <br>For Folia it suspends all region threads until the task is finished.
      *
      * @param task       The task to run.
      * @param entities   The entities to run for.
      * @param ticksLater The amount of ticks to wait before execution.
      */
-    void runTaskLater(@NotNull FutureTask<?> task,
-                      @NotNull List<Entity> entities,
-                      long ticksLater);
+    void runTaskLaterBlocking(@NotNull FutureTask<?> task,
+                              @NotNull List<Entity> entities,
+                              long ticksLater);
 
     /**
-     * Run the task after a specified tick delay for all given entities, in sync with the server.
-     * Warn: for Folia it suspends all threads until the task is finished
+     * Run the task after a specified tick delay for all given entities, in sync with the global thread.
+     * <br>For Spigot/Paper it runs <code>runTaskLater(runnable, ticksLater)</code>.
+     * <br>For Folia it suspends all region threads until the task is finished.
      *
      * @param runnable   The lambda to run.
      * @param entities   The entities to run for.
      * @param ticksLater The amount of ticks to wait before execution.
      */
-    default void runTaskLater(@NotNull Runnable runnable,
-                              @NotNull List<Entity> entities,
-                              long ticksLater) {
-        runTaskLater(new FutureTask<>(runnable, null), entities, ticksLater);
+    default void runTaskLaterBlocking(@NotNull Runnable runnable,
+                                      @NotNull List<Entity> entities,
+                                      long ticksLater) {
+        runTaskLaterBlocking(new FutureTask<>(runnable, null), entities, ticksLater);
     }
 
     /**
@@ -236,8 +238,9 @@ public interface Scheduler {
     }
 
     /**
-     * Run the task after a specified tick delay for all given entities, in sync with the server.
-     * Warn: for Folia it suspends all threads until the task is finished
+     * Run the task after a specified tick delay for all given entities, in sync with the global thread.
+     * <br>For Spigot/Paper it runs <code>runTaskLater(runnable, ticksLater)</code>.
+     * <br>For Folia it suspends all region threads until the task is finished.
      * <p>
      * Reordered for better kotlin interop.
      *
@@ -245,15 +248,16 @@ public interface Scheduler {
      * @param entities   The entities to run for.
      * @param ticksLater The amount of ticks to wait before execution.
      */
-    default void runTaskLater(@NotNull List<Entity> entities,
-                              long ticksLater,
-                              @NotNull Runnable runnable) {
-        runTaskLater(runnable, entities, ticksLater);
+    default void runTaskLaterBlocking(@NotNull List<Entity> entities,
+                                      long ticksLater,
+                                      @NotNull Runnable runnable) {
+        runTaskLaterBlocking(runnable, entities, ticksLater);
     }
 
     /**
-     * Run the task after a specified tick delay for all given entities, in sync with the server.
-     * Warn: for Folia it suspends all threads until the task is finished
+     * Run the task after a specified tick delay for all given entities, in sync with the global thread.
+     * <br>For Spigot/Paper it runs <code>runTaskLater(ticksLater, runnable)</code>.
+     * <br>For Folia it suspends all region threads until the task is finished.
      * <p>
      * Reordered for better kotlin interop.
      *
@@ -261,10 +265,10 @@ public interface Scheduler {
      * @param entities   The entities to run for.
      * @param ticksLater The amount of ticks to wait before execution.
      */
-    default void runTaskLater(@NotNull List<Entity> entities,
-                              long ticksLater,
-                              @NotNull FutureTask<?> task) {
-        runTaskLater(task, entities, ticksLater);
+    default void runTaskLaterBlocking(@NotNull List<Entity> entities,
+                                      long ticksLater,
+                                      @NotNull FutureTask<?> task) {
+        runTaskLaterBlocking(task, entities, ticksLater);
     }
 
     /**
@@ -277,9 +281,11 @@ public interface Scheduler {
      * @deprecated Deprecated in favor of Folia support.
      */
     @Deprecated(since = "6.77.3")
-    BukkitTask runTimer(@NotNull Runnable runnable,
-                        long delay,
-                        long repeat);
+    default BukkitTask runTimer(@NotNull Runnable runnable,
+                                long delay,
+                                long repeat) {
+        return (BukkitTask) runTaskTimer(runnable, delay, repeat);
+    }
 
     /**
      * Run the task repeatedly on a timer.
@@ -401,9 +407,11 @@ public interface Scheduler {
      * @deprecated Deprecated in favor of Folia support.
      */
     @Deprecated(since = "6.77.3")
-    BukkitTask runAsyncTimer(@NotNull Runnable runnable,
-                             long delay,
-                             long repeat);
+    default BukkitTask runAsyncTimer(@NotNull Runnable runnable,
+                                     long delay,
+                                     long repeat) {
+        return (BukkitTask) runTaskAsyncTimer(runnable, delay, repeat);
+    }
 
     /**
      * Run the task repeatedly and asynchronously on a timer.
@@ -432,7 +440,7 @@ public interface Scheduler {
     default BukkitTask runAsyncTimer(long delay,
                                      long repeat,
                                      @NotNull Runnable runnable) {
-        return runAsyncTimer(runnable, delay, repeat);
+        return (BukkitTask) runTaskAsyncTimer(runnable, delay, repeat);
     }
 
     /**
@@ -459,7 +467,9 @@ public interface Scheduler {
      * @deprecated Deprecated in favor of Folia support.
      */
     @Deprecated(since = "6.77.3")
-    BukkitTask run(@NotNull Runnable runnable);
+    default BukkitTask run(@NotNull Runnable runnable) {
+        return (BukkitTask) runTask(runnable);
+    }
 
     /**
      * Run the task.
@@ -520,23 +530,27 @@ public interface Scheduler {
     }
 
     /**
-     * Run the task for all entities, in sync with the server.
-     * Warn: for Folia it suspends all threads until the task is finished
+     * Run the task for all entities, in sync with the global thread.
+     * <br>For Spigot/Paper it runs <code>runTask(task)</code>.
+     * <br>For Folia it suspends all region threads until the task is finished.
+     * <br><b>ISSUE:</b> DO NOT RUN THIS OUTSIDE OF GLOBAL THREAD ON FOLIA
      *
      * @param task     The task to run.
      * @param entities The entities to run for.
      */
-    void runTask(@NotNull List<Entity> entities, @NotNull FutureTask<?> task);
+    void runTaskBlocking(@NotNull List<Entity> entities, @NotNull FutureTask<?> task);
 
     /**
-     * Run the task for all entities, in sync with the server.
-     * Warn: for Folia it suspends all threads until the task is finished
+     * Run the task for all entities, in sync with the global thread.
+     * <br>For Spigot/Paper it runs <code>runTask(runnable)</code>.
+     * <br>For Folia it suspends all region threads until the task is finished.
+     * <br><b>ISSUE:</b> DO NOT RUN THIS OUTSIDE OF GLOBAL THREAD ON FOLIA
      *
      * @param runnable The lambda to run.
      * @param entities The entities to run for.
      */
-    default void runTask(@NotNull List<Entity> entities, @NotNull Runnable runnable) {
-        runTask(entities, new FutureTask<>(runnable, null));
+    default void runTaskBlocking(@NotNull List<Entity> entities, @NotNull Runnable runnable) {
+        runTaskBlocking(entities, new FutureTask<>(runnable, null));
     }
 
     /**
@@ -547,7 +561,9 @@ public interface Scheduler {
      * @deprecated Deprecated in favor of Folia support.
      */
     @Deprecated(since = "6.77.3")
-    BukkitTask runAsync(@NotNull Runnable task);
+    default BukkitTask runAsync(@NotNull Runnable task) {
+        return (BukkitTask) runTaskAsync(task);
+    }
 
     /**
      * Run the task asynchronously.

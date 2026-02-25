@@ -55,7 +55,7 @@ public class CustomItem implements TestableItem {
         working in order to check.
          */
         Eco.get().getEcoPlugin().getScheduler().runTaskLater(
-                () -> Eco.get().getEcoPlugin().getScheduler().runTask(
+                () -> Eco.get().getEcoPlugin().getScheduler().runTaskBlocking(
                         Bukkit.getOnlinePlayers().stream().map(Entity.class::cast).toList(),
                         () -> {
                             if (!matches(getItem())) {

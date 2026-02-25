@@ -5,18 +5,9 @@ import com.willfp.eco.core.scheduling.Scheduler
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
-import org.bukkit.scheduler.BukkitTask
 import java.util.concurrent.FutureTask
 
 class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
-    @Deprecated("Deprecated")
-    override fun runLater(
-        runnable: Runnable,
-        ticksLater: Long
-    ): BukkitTask {
-        return Bukkit.getScheduler().runTaskLater(plugin, runnable, ticksLater)
-    }
-
     override fun runTaskLater(
         task: FutureTask<*>,
         ticksLater: Long
@@ -42,22 +33,12 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
         return runTaskLater(task, ticksLater)
     }
 
-    override fun runTaskLater(
+    override fun runTaskLaterBlocking(
         task: FutureTask<*>,
         entities: List<Entity>,
         ticksLater: Long
     ) {
         runTaskLater(task, ticksLater)
-    }
-
-
-    @Deprecated("Deprecated")
-    override fun runTimer(
-        runnable: Runnable,
-        delay: Long,
-        repeat: Long
-    ): BukkitTask {
-        return Bukkit.getScheduler().runTaskTimer(plugin, runnable, delay, repeat)
     }
 
     override fun runTaskTimer(
@@ -88,15 +69,6 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
         return runTaskTimer(runnable, delay, repeat)
     }
 
-    @Deprecated("Deprecated")
-    override fun runAsyncTimer(
-        runnable: Runnable,
-        delay: Long,
-        repeat: Long
-    ): BukkitTask {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, delay, repeat)
-    }
-
     override fun runTaskAsyncTimer(
         runnable: Runnable,
         delay: Long,
@@ -105,11 +77,6 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
         return EcoWrappedTaskSpigot(
             Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, delay, repeat), true
         )
-    }
-
-    @Deprecated("Deprecated")
-    override fun run(runnable: Runnable): BukkitTask {
-        return Bukkit.getScheduler().runTask(plugin, runnable)
     }
 
     override fun runTask(
@@ -134,16 +101,11 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
         return runTask(task)
     }
 
-    override fun runTask(
+    override fun runTaskBlocking(
         entities: List<Entity>,
         task: FutureTask<*>
     ) {
         runTask(task)
-    }
-
-    @Deprecated("Deprecated")
-    override fun runAsync(runnable: Runnable): BukkitTask {
-        return Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable)
     }
 
     override fun runTaskAsync(task: FutureTask<*>): EcoWrappedTaskSpigot {

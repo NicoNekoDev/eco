@@ -13,6 +13,13 @@ import java.util.concurrent.TimeUnit
 
 class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
     @Deprecated("Deprecated")
+    override fun runLater(
+        runnable: Runnable,
+        ticksLater: Long
+    ): BukkitTask {
+        return Bukkit.getScheduler().runTaskLater(plugin, runnable, ticksLater)
+    }
+
     override fun runTaskLater(
         task: FutureTask<*>,
         ticksLater: Long
@@ -42,13 +49,13 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
         )
     }
 
-    override fun runTaskLater(
+    override fun runTaskLaterBlocking(
         task: FutureTask<*>,
         entities: List<Entity>,
         ticksLater: Long
     ) {
         runTaskLater(ticksLater) {
-            runTask(entities, task)
+            runTaskBlocking(entities, task)
         }
     }
 
@@ -144,32 +151,25 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
         )
     }
 
-    override fun runTask(
+    override fun runTaskBlocking(
         entities: List<Entity>,
         task: FutureTask<*>
     ) {
-        val ownedByEntities = entities.filter { Bukkit.isOwnedByCurrentRegion(it) }
-        val notOwnedByEntities = entities.filterNot { Bukkit.isOwnedByCurrentRegion(it) }
+        val ownedByEntities = entities.any { Bukkit.isOwnedByCurrentRegion(it) }
+        if (ownedByEntities)
+            throw IllegalAccessException("Running tasks on entities in the same region as them is not supported.")
 
-        val startSignal = CountDownLatch(notOwnedByEntities.size)
+        val startSignal = CountDownLatch(entities.size)
         val finishSignal = CountDownLatch(1)
-        for (entity in notOwnedByEntities) {
+        for (entity in entities) {
             runTask(entity) {
                 startSignal.countDown()
                 finishSignal.await()
             }
         }
-
-        val runnable: Runnable = {
-            startSignal.await()
-            task.run()
-            finishSignal.countDown()
-        }
-
-        if (ownedByEntities.isNotEmpty())
-            runTask(runnable)
-        else
-            runnable.run()
+        startSignal.await()
+        task.run()
+        finishSignal.countDown()
     }
 
     @Deprecated("Deprecated")
