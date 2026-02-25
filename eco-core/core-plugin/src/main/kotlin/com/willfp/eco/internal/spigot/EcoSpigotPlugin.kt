@@ -123,7 +123,8 @@ import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsNexo
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsScyther
 import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting
-import com.willfp.eco.internal.spigot.integrations.economy.EconomyVault
+import com.willfp.eco.internal.spigot.integrations.economy.EconomyVaultLegacy
+import com.willfp.eco.internal.spigot.integrations.economy.EconomyVaultUnlocked
 import com.willfp.eco.internal.spigot.integrations.entitylookup.EntityLookupModelEngine
 import com.willfp.eco.internal.spigot.integrations.hologram.HologramCMI
 import com.willfp.eco.internal.spigot.integrations.hologram.HologramDecentHolograms
@@ -395,9 +396,16 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
             // Economy
             IntegrationLoader("Vault") {
-                val rsp = Bukkit.getServer().servicesManager.getRegistration(Economy::class.java)
-                if (rsp != null) {
-                    EconomyManager.register(EconomyVault(rsp.provider))
+                if (ClassUtils.exists("net.milkbowl.vault2.economy.Economy")) {
+                    val rsp = Bukkit.getServer().servicesManager.getRegistration(net.milkbowl.vault2.economy.Economy::class.java)
+                    if (rsp != null) {
+                        EconomyManager.register(EconomyVaultUnlocked(rsp.provider))
+                    }
+                } else {
+                    val rsp = Bukkit.getServer().servicesManager.getRegistration(Economy::class.java)
+                    if (rsp != null) {
+                        EconomyManager.register(EconomyVaultLegacy(rsp.provider))
+                    }
                 }
             },
 

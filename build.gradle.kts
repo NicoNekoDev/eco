@@ -59,6 +59,9 @@ allprojects {
         // mcMMO, BentoBox
         maven("https://repo.codemc.io/repository/maven-public/")
 
+        // VaultUnlocked
+        maven("https://repo.codemc.io/repository/creatorfromhell/")
+
         // Spigot API, Bungee API
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
 
