@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +32,7 @@ public final class PlaceholderManager {
     /**
      * All registered placeholders.
      */
-    private static final DefaultMap<EcoPlugin, Set<Placeholder>> REGISTERED_PLACEHOLDERS = new DefaultMap<>(HashSet::new);
+    private static final DefaultMap<EcoPlugin, Set<Placeholder>> REGISTERED_PLACEHOLDERS = new DefaultMap<>(ConcurrentHashMap.newKeySet());
 
     /**
      * All registered arguments integrations.

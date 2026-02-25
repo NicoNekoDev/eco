@@ -5,9 +5,9 @@ import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 
@@ -21,7 +21,7 @@ public class DefaultMap<K, V> implements ConcurrentMap<K, V> {
     /**
      * The map.
      */
-    private final Map<K, V> map;
+    private final ConcurrentMap<K, V> map;
 
     /**
      * The default value.
@@ -43,7 +43,7 @@ public class DefaultMap<K, V> implements ConcurrentMap<K, V> {
      * @param defaultValue The default value.
      */
     public DefaultMap(@NotNull final Supplier<V> defaultValue) {
-        this(new HashMap<>(), defaultValue);
+        this(new ConcurrentHashMap<>(), defaultValue);
     }
 
     /**
@@ -52,7 +52,7 @@ public class DefaultMap<K, V> implements ConcurrentMap<K, V> {
      * @param map          The map.
      * @param defaultValue The default value.
      */
-    public DefaultMap(@NotNull final Map<K, V> map,
+    public DefaultMap(@NotNull final ConcurrentMap<K, V> map,
                       @NotNull final V defaultValue) {
         this(map, () -> defaultValue);
     }
@@ -63,7 +63,7 @@ public class DefaultMap<K, V> implements ConcurrentMap<K, V> {
      * @param map          The map.
      * @param defaultValue The default value.
      */
-    public DefaultMap(@NotNull final Map<K, V> map,
+    public DefaultMap(@NotNull final ConcurrentMap<K, V> map,
                       @NotNull final Supplier<V> defaultValue) {
         this.map = map;
         this.defaultValue = defaultValue;
@@ -152,7 +152,7 @@ public class DefaultMap<K, V> implements ConcurrentMap<K, V> {
      */
     @NotNull
     public static <K, K1, V> DefaultMap<K, Map<K1, V>> createNestedMap() {
-        return new DefaultMap<>(HashMap::new);
+        return new DefaultMap<>(ConcurrentHashMap::new);
     }
 
     /**
