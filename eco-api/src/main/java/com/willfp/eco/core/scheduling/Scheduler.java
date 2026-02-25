@@ -108,11 +108,10 @@ public interface Scheduler {
      * @param task       The task to run.
      * @param entities   The entities to run for.
      * @param ticksLater The amount of ticks to wait before execution.
-     * @return The created {@link EcoWrappedTask}.
      */
-    EcoWrappedTask runTaskLater(@NotNull FutureTask<?> task,
-                                @NotNull List<Entity> entities,
-                                long ticksLater);
+    void runTaskLater(@NotNull FutureTask<?> task,
+                      @NotNull List<Entity> entities,
+                      long ticksLater);
 
     /**
      * Run the task after a specified tick delay for all given entities, in sync with the server.
@@ -121,12 +120,11 @@ public interface Scheduler {
      * @param runnable   The lambda to run.
      * @param entities   The entities to run for.
      * @param ticksLater The amount of ticks to wait before execution.
-     * @return The created {@link EcoWrappedTask}.
      */
-    default EcoWrappedTask runTaskLater(@NotNull Runnable runnable,
-                                        @NotNull List<Entity> entities,
-                                        long ticksLater) {
-        return runTaskLater(new FutureTask<>(runnable, null), entities, ticksLater);
+    default void runTaskLater(@NotNull Runnable runnable,
+                              @NotNull List<Entity> entities,
+                              long ticksLater) {
+        runTaskLater(new FutureTask<>(runnable, null), entities, ticksLater);
     }
 
     /**
@@ -246,12 +244,11 @@ public interface Scheduler {
      * @param runnable   The lambda to run.
      * @param entities   The entities to run for.
      * @param ticksLater The amount of ticks to wait before execution.
-     * @return The created {@link EcoWrappedTask}.
      */
-    default EcoWrappedTask runTaskLater(@NotNull List<Entity> entities,
-                                        long ticksLater,
-                                        @NotNull Runnable runnable) {
-        return runTaskLater(runnable, entities, ticksLater);
+    default void runTaskLater(@NotNull List<Entity> entities,
+                              long ticksLater,
+                              @NotNull Runnable runnable) {
+        runTaskLater(runnable, entities, ticksLater);
     }
 
     /**
@@ -263,12 +260,11 @@ public interface Scheduler {
      * @param task       The task to run.
      * @param entities   The entities to run for.
      * @param ticksLater The amount of ticks to wait before execution.
-     * @return The created {@link EcoWrappedTask}.
      */
-    default EcoWrappedTask runTaskLater(@NotNull List<Entity> entities,
-                                        long ticksLater,
-                                        @NotNull FutureTask<?> task) {
-        return runTaskLater(task, entities, ticksLater);
+    default void runTaskLater(@NotNull List<Entity> entities,
+                              long ticksLater,
+                              @NotNull FutureTask<?> task) {
+        runTaskLater(task, entities, ticksLater);
     }
 
     /**
@@ -529,9 +525,8 @@ public interface Scheduler {
      *
      * @param task     The task to run.
      * @param entities The entities to run for.
-     * @return The created {@link EcoWrappedTask}.
      */
-    EcoWrappedTask runTask(@NotNull List<Entity> entities, @NotNull FutureTask<?> task);
+    void runTask(@NotNull List<Entity> entities, @NotNull FutureTask<?> task);
 
     /**
      * Run the task for all entities, in sync with the server.
@@ -539,10 +534,9 @@ public interface Scheduler {
      *
      * @param runnable The lambda to run.
      * @param entities The entities to run for.
-     * @return The created {@link EcoWrappedTask}.
      */
-    default EcoWrappedTask runTask(@NotNull List<Entity> entities, @NotNull Runnable runnable) {
-        return runTask(entities, new FutureTask<>(runnable, null));
+    default void runTask(@NotNull List<Entity> entities, @NotNull Runnable runnable) {
+        runTask(entities, new FutureTask<>(runnable, null));
     }
 
     /**

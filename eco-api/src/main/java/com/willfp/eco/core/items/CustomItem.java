@@ -54,11 +54,15 @@ public class CustomItem implements TestableItem {
         immediately after due to registration order; so eco waits until the item should be
         working in order to check.
          */
-        Eco.get().getEcoPlugin().getScheduler().runTaskLater(() -> {
-            if (!matches(getItem())) {
-                Eco.get().getEcoPlugin().getLogger().severe("Item with key " + key + " is invalid!");
-            }
-        }, Bukkit.getOnlinePlayers().stream().map(Entity.class::cast).toList(), 1);
+        Eco.get().getEcoPlugin().getScheduler().runTaskLater(
+                () -> Eco.get().getEcoPlugin().getScheduler().runTask(
+                        Bukkit.getOnlinePlayers().stream().map(Entity.class::cast).toList(),
+                        () -> {
+                            if (!matches(getItem())) {
+                                Eco.get().getEcoPlugin().getLogger().severe("Item with key " + key + " is invalid!");
+                            }
+                        }
+                ), 1);
     }
 
     @Override

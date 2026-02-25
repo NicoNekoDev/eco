@@ -4,7 +4,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.Prerequisite;
 import com.willfp.eco.core.items.Items;
@@ -21,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Utility class to manage and register crafting recipes.
@@ -106,6 +106,8 @@ public final class Recipes {
         return createAndRegisterRecipe(plugin, key, output, recipeStrings, null);
     }
 
+    private static final ReentrantLock locker = new ReentrantLock();
+
     /**
      * Create and register recipe.
      *
@@ -122,34 +124,37 @@ public final class Recipes {
                                                          @NotNull final ItemStack output,
                                                          @NotNull final List<String> recipeStrings,
                                                          @Nullable final String permission) {
-        FutureTask<CraftingRecipe> task = new FutureTask<>(() -> {
-            ShapedCraftingRecipe.Builder builder = ShapedCraftingRecipe.builder(plugin, key)
-                    .setOutput(output)
-                    .setPermission(permission);
-
-            for (int i = 0; i < 9; i++) {
-                builder.setRecipePart(i, Items.lookup(recipeStrings.get(i)));
-            }
-
-            if (builder.isAir()) {
-                plugin.getLogger().warning("Crafting recipe " + plugin.getID() + ":" + key + " consists only");
-                plugin.getLogger().warning("of air or invalid items! It will not be registered.");
-                return null;
-            }
-
-            ShapedCraftingRecipe recipe = builder.build();
-            recipe.register();
-
-            return recipe;
-        });
-        if (Prerequisite.HAS_FOLIA.isMet())
-            Eco.get().getEcoPlugin().getScheduler().runTask(Bukkit.getOnlinePlayers().stream().map(Entity.class::cast).toList(), task);
-        else
-            Eco.get().getEcoPlugin().getScheduler().runTask(task);
         try {
+            locker.lock();
+            FutureTask<CraftingRecipe> task = new FutureTask<>(() -> {
+                ShapedCraftingRecipe.Builder builder = ShapedCraftingRecipe.builder(plugin, key)
+                        .setOutput(output)
+                        .setPermission(permission);
+
+                for (int i = 0; i < 9; i++) {
+                    builder.setRecipePart(i, Items.lookup(recipeStrings.get(i)));
+                }
+
+                if (builder.isAir()) {
+                    plugin.getLogger().warning("Crafting recipe " + plugin.getID() + ":" + key + " consists only");
+                    plugin.getLogger().warning("of air or invalid items! It will not be registered.");
+                    return null;
+                }
+
+                ShapedCraftingRecipe recipe = builder.build();
+                recipe.register();
+
+                return recipe;
+            });
+            if (Prerequisite.HAS_FOLIA.isMet()) {
+                plugin.getScheduler().runTask(Bukkit.getOnlinePlayers().stream().map(Entity.class::cast).toList(), task);
+            } else
+                task.run();
             return task.get();
         } catch (Exception e) {
             throw new RuntimeException(e); // very unlikely to happen
+        } finally {
+            locker.unlock();
         }
     }
 
