@@ -5,6 +5,8 @@ import com.willfp.eco.core.scheduling.EcoWrappedTask
 import com.willfp.eco.core.scheduling.RunnableTask
 import kotlinx.coroutines.Runnable
 import org.bukkit.Bukkit
+import org.bukkit.Location
+import org.bukkit.entity.Entity
 
 abstract class EcoRunnableTaskSpigot(protected val plugin: EcoPlugin) : RunnableTask {
     private var task: EcoWrappedTaskSpigot? = null
@@ -48,6 +50,36 @@ abstract class EcoRunnableTaskSpigot(protected val plugin: EcoPlugin) : Runnable
             Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, delay, period),
             true
         )
+    }
+
+    @Synchronized
+    override fun runTask(location: Location): EcoWrappedTaskSpigot {
+        return runTask()
+    }
+
+    @Synchronized
+    override fun runTaskLater(location: Location, delay: Long): EcoWrappedTaskSpigot {
+        return runTaskLater(delay)
+    }
+
+    @Synchronized
+    override fun runTaskTimer(location: Location, delay: Long, period: Long): EcoWrappedTaskSpigot {
+        return runTaskTimer(delay, period)
+    }
+
+    @Synchronized
+    override fun runTask(entity: Entity): EcoWrappedTaskSpigot {
+        return runTask()
+    }
+
+    @Synchronized
+    override fun runTaskLater(entity: Entity, delay: Long): EcoWrappedTaskSpigot {
+        return runTaskLater(delay)
+    }
+
+    @Synchronized
+    override fun runTaskTimer(entity: Entity, delay: Long, period: Long): EcoWrappedTaskSpigot {
+        return runTaskTimer(delay, period)
     }
 
     @Synchronized
