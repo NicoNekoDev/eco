@@ -29,7 +29,6 @@ class EcoPluginCommand(
             command.description = knownDescription
             command.aliases = knownAliases
         }
-
         Eco.get().syncCommands()
     }
 
