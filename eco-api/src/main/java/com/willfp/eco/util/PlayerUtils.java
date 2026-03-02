@@ -9,6 +9,7 @@ import com.willfp.eco.core.integrations.anticheat.AnticheatManager;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Entity;
@@ -194,5 +195,33 @@ public final class PlayerUtils {
      */
     public static void giveExpAndApplyMending(@NotNull Player player, int amount, boolean applyMending) {
         Eco.get().giveExpAndApplyMending(player, amount, applyMending);
+    }
+
+    /**
+     * Gets all 6 directions a player might be looking.
+     * If the method fails to find a corresponding direction, it will return BlockFace.SELF
+     *
+     * @param player The player.
+     * @return The direction a player is facing.
+     */
+    public static BlockFace getDirection(Player player) {
+        float pitch = player.getLocation().getPitch();
+        float yaw = player.getLocation().getYaw();
+
+        if (pitch < -45) {
+            return BlockFace.UP;
+        } else if (pitch > 45) {
+            return BlockFace.DOWN;
+        }
+
+        double rotation = (yaw - 90) % 360;
+        if (rotation < 0) rotation += 360;
+
+        if (0 <= rotation && rotation < 45) return BlockFace.WEST;
+        if (45 <= rotation && rotation < 135) return BlockFace.NORTH;
+        if (135 <= rotation && rotation < 225) return BlockFace.EAST;
+        if (225 <= rotation && rotation < 315) return BlockFace.SOUTH;
+
+        return BlockFace.SELF;
     }
 }
