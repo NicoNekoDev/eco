@@ -199,7 +199,6 @@ public final class PlayerUtils {
 
     /**
      * Gets all 6 directions a player might be looking.
-     * If the method fails to find a corresponding direction, it will return BlockFace.SELF
      *
      * @param player The player.
      * @return The direction a player is facing.
@@ -222,6 +221,6 @@ public final class PlayerUtils {
         if (135 <= rotation && rotation < 225) return BlockFace.EAST;
         if (225 <= rotation && rotation < 315) return BlockFace.SOUTH;
 
-        return BlockFace.SELF;
+        return BlockFace.WEST;
     }
 }
