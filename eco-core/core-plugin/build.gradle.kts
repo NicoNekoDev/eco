@@ -7,8 +7,8 @@ dependencies {
     // Libraries
     implementation("com.github.NicoNekoDev:Crunch:2.0.3")
     implementation("com.mysql:mysql-connector-j:9.6.0")
-    implementation("org.jetbrains.exposed:exposed-core:1.0.0")
-    implementation("org.jetbrains.exposed:exposed-jdbc:1.0.0")
+    implementation("org.jetbrains.exposed:exposed-core:1.1.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:1.1.0")
     implementation("com.zaxxer:HikariCP:7.0.2")
     implementation("net.kyori:adventure-platform-bukkit:4.4.1")
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.6.2")
