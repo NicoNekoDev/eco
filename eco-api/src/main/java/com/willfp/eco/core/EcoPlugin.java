@@ -694,7 +694,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @return The time.
      */
     public final long reloadWithTime() {
-        return this.reloadWithTime(true);
+        return reloadWithTime(true);
     }
 
     /**
@@ -706,7 +706,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     public final long reloadWithTime(final boolean cancelTasks) {
         long startTime = System.currentTimeMillis();
 
-        this.reload(cancelTasks);
+        this.reload();
 
         return System.currentTimeMillis() - startTime;
     }

@@ -44,8 +44,15 @@ allprojects {
 
         maven("https://repo.auxilor.io/repository/maven-public/")
 
+        // CombatLogX (must be before JitPack to exclude sirblobman from JitPack)
+        maven("https://nexus.sirblobman.xyz/public/")
+
         maven("https://jitpack.io") {
-            content { includeGroupByRegex("com\\.github\\..*") }
+            content {
+                includeGroupByRegex("com\\.github\\..*")
+                excludeGroup("com.github.sirblobman")
+                excludeGroup("com.github.TownyAdvanced")
+            }
         }
 
         // Paper
@@ -78,14 +85,9 @@ allprojects {
         // NoCheatPlus
         maven("https://repo.md-5.net/content/repositories/snapshots/")
 
-        // CombatLogX
-        maven("https://nexus.sirblobman.xyz/public/")
 
         // MythicMobs
         maven("https://mvn.lumine.io/repository/maven-public/")
-
-        // Crunch
-        maven("https://redempt.dev")
 
         // LibsDisguises
         maven("https://mvn.lib.co.nz/public")
@@ -113,6 +115,9 @@ allprojects {
 
         // CoinsEngine
         maven("https://repo.nightexpressdev.com/releases")
+
+        //Towny
+        maven("https://repo.glaremasters.me/repository/towny/")
     }
 
     dependencies {
@@ -230,8 +235,13 @@ tasks {
         relocate("com.moandjiezana.toml", "com.willfp.eco.libs.toml")
         relocate("com.willfp.modelenginebridge", "com.willfp.eco.libs.modelenginebridge")
 
+        relocate("kotlin", "com.willfp.eco.libs.kotlin")
+        relocate("kotlin.jvm", "com.willfp.eco.libs.kotlin.jvm")
+        relocate("kotlin.coroutines", "com.willfp.eco.libs.kotlin.coroutines")
+        relocate("kotlin.reflect", "com.willfp.eco.libs.kotlin.reflect")
+
         /*
-        Kotlin and caffeine are not shaded so that they can be accessed directly by eco plugins.
+        Caffeine is not shaded so that it can be accessed directly by eco plugins.
         Also, not relocating adventure, because it's a pain in the ass, and it doesn't *seem* to be causing loader constraint violations.
          */
     }

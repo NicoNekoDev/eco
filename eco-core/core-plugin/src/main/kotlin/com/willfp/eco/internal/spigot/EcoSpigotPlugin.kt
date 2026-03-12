@@ -42,6 +42,7 @@ import com.willfp.eco.internal.entities.EntityArgParserSilent
 import com.willfp.eco.internal.entities.EntityArgParserSize
 import com.willfp.eco.internal.entities.EntityArgParserSpawnReinforcements
 import com.willfp.eco.internal.entities.EntityArgParserSpeed
+import com.willfp.eco.internal.items.ArgParserAttribute
 import com.willfp.eco.internal.items.ArgParserColor
 import com.willfp.eco.internal.items.ArgParserCustomModelData
 import com.willfp.eco.internal.items.ArgParserEnchantment
@@ -90,7 +91,6 @@ import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationCMI
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationEssentials
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAAC
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAlice
-import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatMatrix
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatNCP
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatSpartan
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatVulcan
@@ -189,6 +189,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Items.registerArgParser(ArgParserMaxStackSize)
         Items.registerArgParser(ArgParserTooltipStyle)
         Items.registerArgParser(ArgParserTrim)
+        Items.registerArgParser(ArgParserAttribute)
 
         Entities.registerArgParser(EntityArgParserName)
         Entities.registerArgParser(EntityArgParserNoAI)
@@ -350,7 +351,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
             // Anticheat
             IntegrationLoader("AAC5") { AnticheatManager.register(AnticheatAAC()) },
-            IntegrationLoader("Matrix") { AnticheatManager.register(AnticheatMatrix()) },
             IntegrationLoader("NoCheatPlus") { AnticheatManager.register(AnticheatNCP()) },
             IntegrationLoader("Spartan") { AnticheatManager.register(AnticheatSpartan()) },
             IntegrationLoader("Vulcan") { AnticheatManager.register(AnticheatVulcan()) },
