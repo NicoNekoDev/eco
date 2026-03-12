@@ -44,8 +44,8 @@ class PlayerBlockListener(
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onBreak(event: MultiBlockBreakEvent) {
-        this.plugin.scheduler.run {
-            for (block in event.blocks) {
+        for (block in event.blocks) {
+            this.plugin.scheduler.runTask(block.location) {
                 removeKey(block)
             }
         }
