@@ -16,7 +16,7 @@ import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.RecipeChoice
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.inventory.ShapelessRecipe
-import java.util.*
+import java.util.Objects
 
 object RecipeManager {
     fun removeRecipeNoResend(recipeKey: NamespacedKey): Boolean {
@@ -28,7 +28,7 @@ object RecipeManager {
 
         @Suppress("UNCHECKED_CAST")
         val recipeKey = recipe.id as net.minecraft.resources
-            .ResourceKey<net.minecraft.world.item.crafting.Recipe<net.minecraft.world.item.crafting.RecipeInput>>
+        .ResourceKey<net.minecraft.world.item.crafting.Recipe<net.minecraft.world.item.crafting.RecipeInput>>
 
         recipeManager.recipes.removeRecipe(recipeKey)
 
@@ -60,7 +60,7 @@ object RecipeManager {
             val filteredRow = StringBuilder(row.length)
 
             for (character in row.toCharArray()) {
-                filteredRow.append(if (ingredients.get(character) == null) ' ' else character)
+                filteredRow.append(if (ingredients[character] == null) ' ' else character)
             }
 
             shape[i] = filteredRow.toString()
@@ -71,44 +71,50 @@ object RecipeManager {
 
     private val Recipe.toNMSEquivalent: RecipeHolder<*>
         get() {
-            if (this is ShapedRecipe) {
-                val craftRecipe = CraftShapedRecipe.fromBukkitRecipe(this)
-                val ingred: MutableMap<Char?, RecipeChoice?> = craftRecipe.getChoiceMap()
-                val shape = replaceUndefinedIngredientsWithEmpty(craftRecipe.getShape(), ingred)
-                ingred.values.removeIf { obj: RecipeChoice? -> Objects.isNull(obj) }
-                val data = Maps.transformValues<Char?, RecipeChoice?, Ingredient?>(
-                    ingred,
-                    Function { bukkit: RecipeChoice? -> craftRecipe.toNMS(bukkit, false) })
-                val pattern = ShapedRecipePattern.of(data, *shape)
-                return RecipeHolder(
-                    CraftRecipe.toMinecraft(craftRecipe.getKey()),
-                    net.minecraft.world.item.crafting.ShapedRecipe(
-                        craftRecipe.getGroup(),
-                        CraftRecipe.getCategory(craftRecipe.getCategory()),
-                        pattern,
-                        CraftItemStack.asNMSCopy(craftRecipe.getResult())
+            when (this) {
+                is ShapedRecipe -> {
+                    val craftRecipe = CraftShapedRecipe.fromBukkitRecipe(this)
+                    val ingred: MutableMap<Char?, RecipeChoice?> = craftRecipe.getChoiceMap()
+                    val shape = replaceUndefinedIngredientsWithEmpty(craftRecipe.shape, ingred)
+                    ingred.values.removeIf { obj: RecipeChoice? -> Objects.isNull(obj) }
+                    val data = Maps.transformValues<Char?, RecipeChoice?, Ingredient?>(
+                        ingred,
+                        Function { bukkit: RecipeChoice? -> craftRecipe.toNMS(bukkit, false) })
+                    val pattern = ShapedRecipePattern.of(data, *shape)
+                    return RecipeHolder(
+                        CraftRecipe.toMinecraft(craftRecipe.key),
+                        net.minecraft.world.item.crafting.ShapedRecipe(
+                            craftRecipe.group,
+                            CraftRecipe.getCategory(craftRecipe.category),
+                            pattern,
+                            CraftItemStack.asNMSCopy(craftRecipe.result)
+                        )
                     )
-                )
-            } else if (this is ShapelessRecipe) {
-                val craftRecipe = CraftShapelessRecipe.fromBukkitRecipe(this)
-                val ingred: MutableList<RecipeChoice> = craftRecipe.getChoiceList()
-                val data: MutableList<Ingredient?> = ArrayList(ingred.size)
-
-                for (i in ingred) {
-                    data.add(craftRecipe.toNMS(i, true))
                 }
 
-                return RecipeHolder(
-                    CraftRecipe.toMinecraft(craftRecipe.getKey()),
-                    net.minecraft.world.item.crafting.ShapelessRecipe(
-                        craftRecipe.getGroup(),
-                        CraftRecipe.getCategory(craftRecipe.getCategory()),
-                        CraftItemStack.asNMSCopy(craftRecipe.getResult()),
-                        data
+                is ShapelessRecipe -> {
+                    val craftRecipe = CraftShapelessRecipe.fromBukkitRecipe(this)
+                    val ingred: MutableList<RecipeChoice> = craftRecipe.getChoiceList()
+                    val data: MutableList<Ingredient?> = ArrayList(ingred.size)
+
+                    for (i in ingred) {
+                        data.add(craftRecipe.toNMS(i, true))
+                    }
+
+                    return RecipeHolder(
+                        CraftRecipe.toMinecraft(craftRecipe.key),
+                        net.minecraft.world.item.crafting.ShapelessRecipe(
+                            craftRecipe.group,
+                            CraftRecipe.getCategory(craftRecipe.category),
+                            CraftItemStack.asNMSCopy(craftRecipe.result),
+                            data
+                        )
                     )
-                )
-            } else {
-                throw UnsupportedOperationException("Unsupported recipe type: " + this.javaClass.name)
+                }
+
+                else -> {
+                    throw UnsupportedOperationException("Unsupported recipe type: " + this.javaClass.name)
+                }
             }
         }
 }

@@ -311,7 +311,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             PlayerflowHandler(this.scheduler).startTicking()
         }
 
-        this.scheduler.runTimer(1L, 20L) {
+        this.scheduler.runTaskTimer(1L, 20L) {
             Recipes.checkBatching()
         }
     }
