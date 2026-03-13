@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
 
+@Suppress("OVERRIDE_DEPRECATION")
 class CustomItemsNexo(
     private val plugin: EcoPlugin
 ) : CustomItemsIntegration, Listener {
