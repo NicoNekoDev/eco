@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.Prerequisite;
 import com.willfp.eco.core.items.Items;
@@ -17,6 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,6 +44,12 @@ public final class Recipes {
             .build(
                     matrix -> RECIPES.values().stream().filter(recipe -> recipe.test(matrix)).findFirst()
             );
+
+    /**
+     * Variable representing timestamp at which last recipe was scheduled for registration.
+     * Used to batch multiple registrations together.
+     */
+    private static long lastScheduledRegistration = 0L;
 
     /**
      * Register a recipe.
@@ -243,6 +251,50 @@ public final class Recipes {
                                                          @NotNull final List<String> recipeStrings,
                                                          @Nullable final String permission) {
         return createAndRegisterRecipe(plugin, key, output, recipeStrings, permission, false);
+    }
+
+    /**
+     * Schedule a Bukkit recipe for registration, batching it with others if within a short time frame.
+     * @param recipe the recipe
+     */
+    public static void scheduleBukkitRecipeRegistration(@NotNull final Recipe recipe) {
+        Eco.get().addBukkitRecipeNoResend(recipe);
+        lastScheduledRegistration = System.currentTimeMillis();
+    }
+
+    /**
+     * Schedule a Bukkit recipe for removal, batching it with others if within a short time frame.
+     * @param key the recipe key
+     * @return true if the recipe was found and scheduled for removal, false if not found
+     */
+    public static boolean scheduleBukkitRecipeRemoval(@NotNull final NamespacedKey key) {
+        var result = Eco.get().removeBukkitRecipeNoResend(key);
+        if (result) {
+            lastScheduledRegistration = System.currentTimeMillis();
+        }
+        return result;
+    }
+
+    /**
+     * Force resend recipe updates to clients
+     */
+    public static void forceResendRecipeUpdates() {
+        Eco.get().reloadBukkitRecipes();
+    }
+
+    /**
+     * Check if it's been a while since the last recipe registration, and if so, force resend recipe updates to clients.
+     */
+    public static void checkBatching() {
+        if (lastScheduledRegistration == 0L) {
+            return;
+        }
+
+        if (System.currentTimeMillis() - lastScheduledRegistration > 3000L) {
+            forceResendRecipeUpdates();
+            Eco.get().getEcoPlugin().getLogger().info("Forced resend of recipe updates to clients after batching period.");
+            lastScheduledRegistration = 0L;
+        }
     }
 
     private Recipes() {
