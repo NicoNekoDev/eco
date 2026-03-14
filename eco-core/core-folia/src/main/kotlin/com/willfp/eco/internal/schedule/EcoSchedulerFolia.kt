@@ -43,9 +43,11 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
         entity: Entity,
         ticksLater: Long
     ): EcoWrappedTask {
-        return EcoWrappedTaskFolia(
-            entity.scheduler.runDelayed(plugin, { task.run() }, null, ticksLater)!!
-        )
+        val scheduled = entity.scheduler.runDelayed(plugin, { task.run() }, null, ticksLater)
+        return if (scheduled != null)
+            EcoWrappedTaskFolia(scheduled)
+        else
+            runTaskLater(task, ticksLater)
     }
 
     @Deprecated("Deprecated")
@@ -84,9 +86,11 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
         delay: Long,
         repeat: Long
     ): EcoWrappedTask {
-        return EcoWrappedTaskFolia(
-            entity.scheduler.runAtFixedRate(plugin, { runnable.run() }, null, delay, repeat)!!
-        )
+        val scheduled = entity.scheduler.runAtFixedRate(plugin, { runnable.run() }, null, delay, repeat)
+        return if (scheduled != null)
+            EcoWrappedTaskFolia(scheduled)
+        else
+            runTaskTimer(runnable, delay, repeat)
     }
 
     @Deprecated("Deprecated")
@@ -135,9 +139,11 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
         entity: Entity,
         task: FutureTask<*>
     ): EcoWrappedTask {
-        return EcoWrappedTaskFolia(
-            entity.scheduler.run(plugin, { task.run() }, null)!!
-        )
+        val scheduled = entity.scheduler.run(plugin, { task.run() }, null)
+        return if (scheduled != null)
+            EcoWrappedTaskFolia(scheduled)
+        else
+            runTask(task)
     }
 
     @Deprecated("Deprecated")
