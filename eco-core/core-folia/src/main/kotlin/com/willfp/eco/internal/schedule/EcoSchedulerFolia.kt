@@ -7,7 +7,6 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.scheduler.BukkitTask
-import java.util.concurrent.CountDownLatch
 import java.util.concurrent.FutureTask
 import java.util.concurrent.TimeUnit
 
@@ -47,16 +46,6 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
         return EcoWrappedTaskFolia(
             entity.scheduler.runDelayed(plugin, { task.run() }, null, ticksLater)!!
         )
-    }
-
-    override fun runTaskLaterBlocking(
-        task: FutureTask<*>,
-        entities: List<Entity>,
-        ticksLater: Long
-    ) {
-        runTaskLater(ticksLater) {
-            runTaskBlocking(entities, task)
-        }
     }
 
     @Deprecated("Deprecated")
@@ -149,27 +138,6 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
         return EcoWrappedTaskFolia(
             entity.scheduler.run(plugin, { task.run() }, null)!!
         )
-    }
-
-    override fun runTaskBlocking(
-        entities: List<Entity>,
-        task: FutureTask<*>
-    ) {
-        val ownedByEntities = entities.any { Bukkit.isOwnedByCurrentRegion(it) }
-        if (ownedByEntities)
-            throw IllegalAccessException("Running tasks on entities in the same region as them is not supported.")
-
-        val startSignal = CountDownLatch(entities.size)
-        val finishSignal = CountDownLatch(1)
-        for (entity in entities) {
-            runTask(entity) {
-                startSignal.countDown()
-                finishSignal.await()
-            }
-        }
-        startSignal.await()
-        task.run()
-        finishSignal.countDown()
     }
 
     @Deprecated("Deprecated")

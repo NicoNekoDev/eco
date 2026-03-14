@@ -13,9 +13,7 @@ import com.willfp.eco.core.recipe.recipes.CraftingRecipe;
 import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
 import com.willfp.eco.core.recipe.recipes.ShapelessCraftingRecipe;
 import com.willfp.eco.util.NamespacedKeyUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
@@ -264,11 +262,7 @@ public final class Recipes {
      * Force resend recipe updates to clients
      */
     public static void forceResendRecipeUpdates() {
-        Eco.get().getEcoPlugin().getScheduler()
-                .runTaskBlocking(
-                        Bukkit.getOnlinePlayers().stream().map(Entity.class::cast).toList(),
-                        () -> Eco.get().reloadBukkitRecipes()
-                );
+        Eco.get().reloadBukkitRecipes();
     }
 
     /**

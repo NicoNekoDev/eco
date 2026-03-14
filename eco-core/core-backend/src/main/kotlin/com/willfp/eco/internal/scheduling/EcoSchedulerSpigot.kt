@@ -33,14 +33,6 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
         return runTaskLater(task, ticksLater)
     }
 
-    override fun runTaskLaterBlocking(
-        task: FutureTask<*>,
-        entities: List<Entity>,
-        ticksLater: Long
-    ) {
-        runTaskLater(task, ticksLater)
-    }
-
     override fun runTaskTimer(
         runnable: Runnable,
         delay: Long,
@@ -99,13 +91,6 @@ class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
         task: FutureTask<*>
     ): EcoWrappedTaskSpigot {
         return runTask(task)
-    }
-
-    override fun runTaskBlocking(
-        entities: List<Entity>,
-        task: FutureTask<*>
-    ) {
-        runTask(task)
     }
 
     override fun runTaskAsync(task: FutureTask<*>): EcoWrappedTaskSpigot {

@@ -6,7 +6,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.concurrent.FutureTask;
 
 /**
@@ -99,34 +98,6 @@ public interface Scheduler {
                                         @NotNull Entity entity,
                                         long ticksLater) {
         return runTaskLater(new FutureTask<>(runnable, null), entity, ticksLater);
-    }
-
-    /**
-     * Run the task after a specified tick delay for all given entities, in sync with the global thread.
-     * <br>For Spigot/Paper it runs <code>runTaskLater(task, ticksLater)</code>.
-     * <br>For Folia it suspends all region threads until the task is finished.
-     *
-     * @param task       The task to run.
-     * @param entities   The entities to run for.
-     * @param ticksLater The amount of ticks to wait before execution.
-     */
-    void runTaskLaterBlocking(@NotNull FutureTask<?> task,
-                              @NotNull List<Entity> entities,
-                              long ticksLater);
-
-    /**
-     * Run the task after a specified tick delay for all given entities, in sync with the global thread.
-     * <br>For Spigot/Paper it runs <code>runTaskLater(runnable, ticksLater)</code>.
-     * <br>For Folia it suspends all region threads until the task is finished.
-     *
-     * @param runnable   The lambda to run.
-     * @param entities   The entities to run for.
-     * @param ticksLater The amount of ticks to wait before execution.
-     */
-    default void runTaskLaterBlocking(@NotNull Runnable runnable,
-                                      @NotNull List<Entity> entities,
-                                      long ticksLater) {
-        runTaskLaterBlocking(new FutureTask<>(runnable, null), entities, ticksLater);
     }
 
     /**
@@ -235,40 +206,6 @@ public interface Scheduler {
                                         long ticksLater,
                                         @NotNull Runnable runnable) {
         return runTaskLater(runnable, entity, ticksLater);
-    }
-
-    /**
-     * Run the task after a specified tick delay for all given entities, in sync with the global thread.
-     * <br>For Spigot/Paper it runs <code>runTaskLater(runnable, ticksLater)</code>.
-     * <br>For Folia it suspends all region threads until the task is finished.
-     * <p>
-     * Reordered for better kotlin interop.
-     *
-     * @param runnable   The lambda to run.
-     * @param entities   The entities to run for.
-     * @param ticksLater The amount of ticks to wait before execution.
-     */
-    default void runTaskLaterBlocking(@NotNull List<Entity> entities,
-                                      long ticksLater,
-                                      @NotNull Runnable runnable) {
-        runTaskLaterBlocking(runnable, entities, ticksLater);
-    }
-
-    /**
-     * Run the task after a specified tick delay for all given entities, in sync with the global thread.
-     * <br>For Spigot/Paper it runs <code>runTaskLater(ticksLater, runnable)</code>.
-     * <br>For Folia it suspends all region threads until the task is finished.
-     * <p>
-     * Reordered for better kotlin interop.
-     *
-     * @param task       The task to run.
-     * @param entities   The entities to run for.
-     * @param ticksLater The amount of ticks to wait before execution.
-     */
-    default void runTaskLaterBlocking(@NotNull List<Entity> entities,
-                                      long ticksLater,
-                                      @NotNull FutureTask<?> task) {
-        runTaskLaterBlocking(task, entities, ticksLater);
     }
 
     /**
@@ -527,30 +464,6 @@ public interface Scheduler {
      */
     default EcoWrappedTask runTask(@NotNull Entity entity, @NotNull Runnable runnable) {
         return runTask(entity, new FutureTask<>(runnable, null));
-    }
-
-    /**
-     * Run the task for all entities, in sync with the global thread.
-     * <br>For Spigot/Paper it runs <code>runTask(task)</code>.
-     * <br>For Folia it suspends all region threads until the task is finished.
-     * <br><b>ISSUE:</b> DO NOT RUN THIS OUTSIDE OF GLOBAL THREAD ON FOLIA
-     *
-     * @param task     The task to run.
-     * @param entities The entities to run for.
-     */
-    void runTaskBlocking(@NotNull List<Entity> entities, @NotNull FutureTask<?> task);
-
-    /**
-     * Run the task for all entities, in sync with the global thread.
-     * <br>For Spigot/Paper it runs <code>runTask(runnable)</code>.
-     * <br>For Folia it suspends all region threads until the task is finished.
-     * <br><b>ISSUE:</b> DO NOT RUN THIS OUTSIDE OF GLOBAL THREAD ON FOLIA
-     *
-     * @param runnable The lambda to run.
-     * @param entities The entities to run for.
-     */
-    default void runTaskBlocking(@NotNull List<Entity> entities, @NotNull Runnable runnable) {
-        runTaskBlocking(entities, new FutureTask<>(runnable, null));
     }
 
     /**
