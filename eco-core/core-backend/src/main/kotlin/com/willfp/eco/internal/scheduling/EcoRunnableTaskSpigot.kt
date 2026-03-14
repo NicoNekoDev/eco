@@ -28,28 +28,32 @@ abstract class EcoRunnableTaskSpigot(protected val plugin: EcoPlugin) : Runnable
     @Synchronized
     override fun runTaskLater(delay: Long): EcoWrappedTaskSpigot {
         val runnable: Runnable = { this.run() }
-        return EcoWrappedTaskSpigot(Bukkit.getScheduler().runTaskLater(plugin, runnable, delay))
+        task = EcoWrappedTaskSpigot(Bukkit.getScheduler().runTaskLater(plugin, runnable, delay))
+        return task!!
     }
 
     @Synchronized
     override fun runTaskLaterAsynchronously(delay: Long): EcoWrappedTaskSpigot {
         val runnable: Runnable = { this.run() }
-        return EcoWrappedTaskSpigot(Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnable, delay))
+        task = EcoWrappedTaskSpigot(Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnable, delay))
+        return task!!
     }
 
     @Synchronized
     override fun runTaskTimer(delay: Long, period: Long): EcoWrappedTaskSpigot {
         val runnable: Runnable = { this.run() }
-        return EcoWrappedTaskSpigot(Bukkit.getScheduler().runTaskTimer(plugin, runnable, delay, period), true)
+        task = EcoWrappedTaskSpigot(Bukkit.getScheduler().runTaskTimer(plugin, runnable, delay, period), true)
+        return task!!
     }
 
     @Synchronized
     override fun runTaskTimerAsynchronously(delay: Long, period: Long): EcoWrappedTaskSpigot {
         val runnable: Runnable = { this.run() }
-        return EcoWrappedTaskSpigot(
+        task = EcoWrappedTaskSpigot(
             Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, delay, period),
             true
         )
+        return task!!
     }
 
     @Synchronized
